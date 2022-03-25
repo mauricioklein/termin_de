@@ -6,7 +6,7 @@ describe TerminDe::Calendar do
   # the sample calendar is used which returns 2020-08-31 as bookable
   describe '#earlier?' do
     let(:options) do
-      TerminDe::Cli::Options.new(before_date, after_date, true, '12345')
+      TerminDe::Cli::Options.new(before_date, after_date, Float::INFINITY, true, '12345')
     end
 
     subject { described_class.new(options).earlier? }

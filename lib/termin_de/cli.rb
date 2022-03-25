@@ -8,6 +8,7 @@ module TerminDe
   class Cli
     DEFAULT_BEFORE_DATE = Date.new(3000, 0o1, 0o1)
     DEFAULT_AFTER_DATE = Date.new(1970, 0o1, 0o1)
+    DEFAULT_TIMES = Float::INFINITY
     DEFAULT_DRY_RUN = false
     # default request for id card
     DEFAULT_SERVICE = '120703'
@@ -24,6 +25,7 @@ module TerminDe
       @options = Options.new(
         DEFAULT_BEFORE_DATE,
         DEFAULT_AFTER_DATE,
+        DEFAULT_TIMES,
         DEFAULT_DRY_RUN,
         DEFAULT_SERVICE,
         BURGERAMT_IDS
@@ -37,7 +39,7 @@ module TerminDe
 
     private
 
-    Options = Struct.new(:before_date, :after_date, :dry_run, :service, :burgeramt, :command) do
+    Options = Struct.new(:before_date, :after_date, :times, :dry_run, :service, :burgeramt, :command) do
       def command_given?
         !command.nil?
       end
@@ -68,6 +70,10 @@ module TerminDe
 
         parser.on('-c', '--execute=<command>', String, 'Run given command with %{date} and %{link} replacements') do |command|
           @options.command = command
+        end
+
+        parser.on('-t', '--times=<value>', String, 'Number of iterations of the loop') do |times|
+          @options.times = !times.nil? ? times.to_i : DEFAULT_TIMES
         end
 
         parser.on('-s', '--service=<id>', String, 'Id of the requested service') do |id|

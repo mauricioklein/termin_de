@@ -18,7 +18,7 @@ module TerminDe
     end
 
     def run
-      infinitly do
+      repeat do
         calendar = Calendar.new(@options)
 
         if calendar.earlier?
@@ -33,9 +33,9 @@ module TerminDe
 
     private
 
-    def infinitly
-      loop do
-        @logger.info "Looking for available slots after #{@options.after_date} and before #{@options.before_date}"
+    def repeat
+      (1..@options.times).each do |i|
+        @logger.info "[#{iteration(i)}] Looking for available slots after #{@options.after_date} and before #{@options.before_date}"
         begin
           yield
         rescue Exception => e
@@ -57,6 +57,11 @@ module TerminDe
     def termin_found(termin)
       @logger.info "Found new [#{termin.date}] → #{termin.link}"
       `#{@options.command % termin.to_h}` if @options.command_given?
+    end
+
+    def iteration(i)
+      limit = @options.times.infinite? ? '∞' : @options.times
+      "#{i}/#{limit}"
     end
   end
 end
